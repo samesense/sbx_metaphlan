@@ -78,8 +78,8 @@ rule metaphlan_bowtie:
 rule metaphlan_database:
     output:
         dbdir = ancient(str(CLASSIFY_FP/'metaphlan'/'databases'))
-    conda:
-        "sbx_metaphlan_env.yml"
+    singularity:
+        "docker://biobakery/metaphlan2"
     params:
         conda_prefix = CONDA_PREFIX
     shell:
