@@ -41,7 +41,7 @@ rule metaphlan_classify:
     threads:
         Cfg['sbx_metaphlan']['threads']
     singularity:
-        "docker:biobakery/metaphlan2"
+        "docker://biobakery/metaphlan2"
     shell:
         """
             metaphlan2.py  \
@@ -63,7 +63,7 @@ rule metaphlan_bowtie:
     threads:
         Cfg['sbx_metaphlan']['threads']
     singularity:
-        "docker:biocontainers/bowtie2"
+        "docker://biocontainers/bowtie2"
     shell:
         """
             bowtie2 --sam-no-hd --sam-no-sq --no-unal --very-sensitive \
