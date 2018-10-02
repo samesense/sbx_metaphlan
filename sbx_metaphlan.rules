@@ -41,7 +41,7 @@ rule metaphlan_classify:
     threads:
         Cfg['sbx_metaphlan']['threads']
     singularity:
-        "docker:docker pull biobakery/metaphlan2"
+        "docker:biobakery/metaphlan2"
     shell:
         """
             metaphlan2.py  \
