@@ -40,8 +40,8 @@ rule metaphlan_classify:
         sambz2 = str(CLASSIFY_FP/'metaphlan'/'raw'/'{sample}.bowtie2.sam.bz2')
     threads:
         Cfg['sbx_metaphlan']['threads']
-    conda:
-        "sbx_metaphlan_env.yml"
+    singularity:
+        "docker:docker pull biobakery/metaphlan2"
     shell:
         """
             metaphlan2.py  \
@@ -62,8 +62,8 @@ rule metaphlan_bowtie:
         dbdir = ancient(str(CLASSIFY_FP/'metaphlan'/'databases'))
     threads:
         Cfg['sbx_metaphlan']['threads']
-    conda:
-        "sbx_metaphlan_env.yml"
+    singularity:
+        "docker:biocontainers/bowtie2"
     shell:
         """
             bowtie2 --sam-no-hd --sam-no-sq --no-unal --very-sensitive \
