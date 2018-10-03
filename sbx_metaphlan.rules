@@ -94,26 +94,27 @@ rule metaphlan_database:
             # This allows easier access to the database on disk, whether it's
             # supplied automatically by metaphlan2 or manually before running
             # these rules.
-            path_db="{params.conda_prefix}/opt/metaphlan_databases"
-            mkdir -p "$path_db"
-            ln -sfT "$path_db" {params.conda_prefix}/bin/databases
-            ln -sfT "$path_db" {params.conda_prefix}/bin/metaphlan_databases
+            path_db={params.conda_prefix}/opt/metaphlan_databases
+            mkdir -p $path_db
+            ln -sfT $path_db {params.conda_prefix}/bin/databases
+            ln -sfT $path_db {params.conda_prefix}/bin/metaphlan_databases
 
-            function lsbt2 {{
-            ls -1 {params.conda_prefix}/bin/databases/mpa_v20_m200{{.{{1..4}},.rev.{{1..2}}}}.bt2 2> /dev/null | wc -l
+            lsbt2 () {{ \
+            ls -1 {params.conda_prefix}/bin/databases/mpa_v20_m200{{.{{1..4}},.rev.{{1..2}}}}.bt2 2> /dev/null | wc -l \
             }}
-            bt2=$(lsbt2)
-            if [[ "$bt2" != 6 ]]
+            echo perry
+            bt2="$(lsbt2)"
+            if [[ $bt2 != 6 ]]
             then
                 metaphlan2.py --install
             fi
             # To track completion of this task, place a symlink as an output
             # file pointing into the database location inside the metaphlan
             # environment.
-            bt2=$(lsbt2)
-            if [[ "$bt2" == 6 ]]
+            bt2="$(lsbt2)"
+            if [[ $bt2 == 6 ]]
             then
-                ln -sf {params.conda_prefix}/bin/databases "{output.dbdir}"
+                ln -sf {params.conda_prefix}/bin/databases {output.dbdir}
             fi
         """
 
