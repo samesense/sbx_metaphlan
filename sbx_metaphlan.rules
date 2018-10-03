@@ -41,7 +41,7 @@ rule metaphlan_classify:
     threads:
         Cfg['sbx_metaphlan']['threads']
     singularity:
-        "docker://samesense/metaphlan2"
+        "docker://samesense/metaphlan2-docker"
     shell:
         """
             metaphlan2.py  \
@@ -79,7 +79,7 @@ rule metaphlan_database:
     output:
         dbdir = ancient(str(CLASSIFY_FP/'metaphlan'/'databases'))
     singularity:
-        "docker://samesense/metaphlan2"
+        "docker://samesense/metaphlan2-docker"
     params:
         conda_prefix = CONDA_PREFIX
     shell:
