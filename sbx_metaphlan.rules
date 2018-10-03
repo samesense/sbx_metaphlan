@@ -41,7 +41,7 @@ rule metaphlan_classify:
     threads:
         Cfg['sbx_metaphlan']['threads']
     singularity:
-        "docker://segatalab/metaphlan2"
+        "docker://samesense/metaphlan2"
     shell:
         """
             metaphlan2.py  \
@@ -63,7 +63,7 @@ rule metaphlan_bowtie:
     threads:
         Cfg['sbx_metaphlan']['threads']
     singularity:
-        "docker://segatalab/metaphlan2"
+        "docker://biocontainers/bowtie2"
     shell:
         """
             bowtie2 --sam-no-hd --sam-no-sq --no-unal --very-sensitive \
@@ -79,7 +79,7 @@ rule metaphlan_database:
     output:
         dbdir = ancient(str(CLASSIFY_FP/'metaphlan'/'databases'))
     singularity:
-        "docker://segatalab/metaphlan2"
+        "docker://samesense/metaphlan2"
     params:
         conda_prefix = CONDA_PREFIX
     shell:
