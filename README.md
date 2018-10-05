@@ -11,7 +11,7 @@
 
 ## Running
 
-This extension uses a docker image for MetaPhlAn2, so you need to include the `--use-singularity --singularity-args "-B /mnt/isilon/:/mnt/isilon/"` argument when running
+This extension uses a [docker image] for MetaPhlAn2, so you need to include the `--use-singularity --singularity-args "-B /mnt/isilon/:/mnt/isilon/"` argument when running
 Sunbeam:
 
     sunbeam run --configfile=sunbeam_config.yml --use-singularity --singularity-args "-B /mnt/isilon/:/mnt/isilon/" all_metaphlan
