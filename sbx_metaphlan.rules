@@ -23,6 +23,10 @@ rule taxonomic_assignment_report:
     run:
         metaphlan_make_report(input.fps, output[0])
 
+rule test_mf:
+    input: 
+        str(CLASSIFY_FP/'metaphlan'/'review'/'s083.Healthy.lessthan5.Feces.Week.8_review.txt')
+        
 # Chunyu's curated version of the metaphlan output file.
 rule metaphlan_review_output:
     output:
@@ -59,63 +63,16 @@ rule metaphlan_bowtie:
         pair = expand(str(QC_FP/'decontam'/'{sample}_{rp}.fastq.gz'),
                       sample = "{sample}",
                       rp = Pairs),
-        dbdir = ancient(str(CLASSIFY_FP/'metaphlan'/'databases'))
     threads:
         Cfg['sbx_metaphlan']['threads']
     singularity:
-        "docker://biocontainers/bowtie2"
+        "docker://samesense/metaphlan2-docker"
     shell:
         """
             bowtie2 --sam-no-hd --sam-no-sq --no-unal --very-sensitive \
-            -x "{input.dbdir}/mpa_v20_m200" \
+            -x /biobox/src/metaphlan2/metaphlan_databases/mpa_v20_m200 \
             -1 {input.pair[0]} -2 {input.pair[1]} -p {threads} \
             | bzip2 > {output.sambz2}
-        """
-
-# Make sure metaphlan has downloaded its database and indexed it for bowtie2,
-# storing the files inside the Sunbeam environment in opt/metaphlan_databases,
-# and symlink to it in the metaphlan output dir.
-rule metaphlan_database:
-    output:
-        dbdir = ancient(str(CLASSIFY_FP/'metaphlan'/'databases'))
-    singularity:
-        "docker://samesense/metaphlan2-docker"
-    params:
-        conda_prefix = CONDA_PREFIX
-    shell:
-        """
-            # Snakemake by default fails the whole shell script if any command
-            # within a pipe has a non-zero exit status.  Disabling that here.
-            set +o pipefail
-
-            # Link the two possible database locations (later versions of
-            # metaphlan2 use "metaphlan_databases") from the metphlan
-            # environment back out to the Sunbeam environment.
-            # This allows easier access to the database on disk, whether it's
-            # supplied automatically by metaphlan2 or manually before running
-            # these rules.
-            path_db={params.conda_prefix}/opt/metaphlan_databases
-            mkdir -p $path_db
-            ln -sfT $path_db {params.conda_prefix}/bin/databases
-            ln -sfT $path_db {params.conda_prefix}/bin/metaphlan_databases
-
-            lsbt2 () {{ \
-            ls -1 {params.conda_prefix}/bin/databases/mpa_v20_m200{{.{{1..4}},.rev.{{1..2}}}}.bt2 2> /dev/null | wc -l \
-            }}
-            echo perry
-            bt2="$(lsbt2)"
-            if [[ $bt2 != 6 ]]
-            then
-                metaphlan2.py --install
-            fi
-            # To track completion of this task, place a symlink as an output
-            # file pointing into the database location inside the metaphlan
-            # environment.
-            bt2="$(lsbt2)"
-            if [[ $bt2 == 6 ]]
-            then
-                ln -sf {params.conda_prefix}/bin/databases {output.dbdir}
-            fi
         """
 
 #################### Helper functions
