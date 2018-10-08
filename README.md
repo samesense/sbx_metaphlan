@@ -13,8 +13,11 @@
 
 This extension uses a [docker image] for MetaPhlAn2, so you need to include the `--use-singularity --singularity-args "-B /mnt/isilon/:/mnt/isilon/"` argument when running
 Sunbeam:
-
-    sunbeam run --configfile=sunbeam_config.yml --use-singularity --singularity-args "-B /mnt/isilon/:/mnt/isilon/" all_metaphlan
+```
+    sunbeam run --configfile=sunbeam_config.yml \
+    --use-singularity \
+    --singularity-args "-B /mnt/isilon/:/mnt/isilon/" all_metaphlan
+```
 
 [Sunbeam]: https://github.com/sunbeam-labs/sunbeam
 [MetaPhlAn2]: https://bitbucket.org/biobakery/metaphlan2
